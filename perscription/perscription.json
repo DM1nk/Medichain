@@ -1,0 +1,8 @@
+{
+  "description": "Perscription Infor", 
+  "hospitalAddress": "address",
+  "treatmentTime": "time",
+  "lockTime": "time",
+  "createDate": "date",
+  "lastPurchase": "date" 
+}
