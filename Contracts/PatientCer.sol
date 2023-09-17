@@ -6,11 +6,15 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Patient is ERC721, ERC721URIStorage, Ownable {
+    mapping (address => bool) isGovernment;
     constructor() ERC721("Patient", "P") {}
-
+    modifier onlyGovernment () {
+      require(isGovernment[msg.sender] == true, "Only regulatory to hospital");
+      _;
+    }
     function safeMint(address to, uint256 tokenId, string memory uri)
         public
-        onlyOwner
+        onlyGovernment
     {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -38,5 +42,8 @@ contract Patient is ERC721, ERC721URIStorage, Ownable {
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+        function revoke(address patient, uint256 tokenID,address newPatient) public onlyGovernment {
+      transferFrom(patient, newPatient, tokenID);
     }
 }

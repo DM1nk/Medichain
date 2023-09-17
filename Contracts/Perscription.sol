@@ -64,8 +64,8 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       isPharmarcy[pharmarcyAdd] = true;
     }
 
-    function revoke(address patient, uint256 tokenID) public onlyGovernment {
-      
+    function revoke(address patient, uint256 tokenID,address newPatient) public onlyGovernment {
+      transferFrom(patient, newPatient, tokenID);
     }
 
     
