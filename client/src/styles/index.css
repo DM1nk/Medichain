@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .text-body-sm {
+    @apply text-h6 font-satoshi;
+  }
+
+  .text-body-md {
+    @apply text-h5 font-satoshi;
+  }
+
+  .text-body-lg {
+    @apply text-[18px] font-satoshi;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.fb_dialog.fb_dialog_advanced {
+  right: 18pt;
+ margin-right: 50px;
+}
+iframe.fb_customer_chat_bounce_in_v2 {
+  right: 9pt;
+  margin-right: 50px;
+}
+iframe.fb_customer_chat_bounce_out_v2 {
+  right: 9pt;
+  margin-right: 50px;
+}
+
+body {
+  /* Scrollbar vertical */
+  overflow-y: overlay;
+
+  margin: 0;
+  font-family: 'Clash Display', sans-serif;
+}
+
+.dark body {
+  background-color: #000b29;
+  color: #f9f9f9;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 140%;
+}
+
+small,
+p,
+span {
+  line-height: 150%;
+}
+
+/* Scollbar */
+html *::-webkit-scrollbar {
+  border-radius: 0;
+  width: 8px;
+}
+html *::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+html *::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
