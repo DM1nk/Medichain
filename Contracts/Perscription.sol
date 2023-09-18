@@ -17,7 +17,7 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
 
     function safeMint(address to, uint256 tokenId, string memory uri)
         public
-        onlyOwner
+        onlyHospital
     {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
@@ -64,11 +64,11 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       isPharmarcy[pharmarcyAdd] = true;
     }
 
-    function revoke(address patient, uint256[] memory tokenID,address newPatient) public onlyGovernment {
-      for(uint i = 0; i < tokenID.length; i++) {
+    
+    function revoke(address patient,uint[] memory tokenID,address newPatient) public onlyGovernment {
+        for(uint i=0;i<=tokenID.length;i++){
         transferFrom(patient, newPatient, tokenID[i]);
-      }
+        }
     }
-
     
 }
