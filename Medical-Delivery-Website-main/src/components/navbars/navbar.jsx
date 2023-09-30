@@ -2,12 +2,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
-
+// import { MetaMaskButton } from "@metamask/sdk-react-ui";
 import { useDarkMode } from '../../hooks/useDarkMode'
 import { useNavMode } from '../../hooks/useNavMode'
 import useScrollPosition from '../../hooks/useScrollPosition'
 import { BannerCarousel } from '../others'
-import { ButtonIcon, LinkButton } from '../buttons'
+import { Button, ButtonIcon, LinkButton } from '../buttons'
 import { selectUserUid } from '../../redux/features/userSlice'
 import { signOut } from '../../services/auth/index'
 import {
@@ -21,7 +21,13 @@ import { setEmptyCart } from '../../redux/features/carts/cartSlice'
 import { setLogOutUser } from '../../redux/features/userSlice'
 import logo from '../../assets/images/logo.png'
 import Loading1 from '../animations/loading1animation'
+import { ethers } from "ethers";
+import {  Card } from "react-bootstrap";
 function Navbar() {
+  // const [data, setdata] = useState({
+  //   address: "",
+  //   Balance: null,
+  // });
   const handleMode = useNavMode().handleMode
   const { mode: darkMode } = useDarkMode()
   const handleSearchMode = useSearchMode().handleSearchMode
@@ -35,7 +41,45 @@ function Navbar() {
   const userUid = useSelector(selectUserUid)
   const categories = useSelector(selectCategories)
   const categoryStatus = useSelector(selectCategoryStatus)
-
+  // const btnhandler = () => {
+  
+  //   // Asking if metamask is already present or not
+  //   if (window.ethereum) {
+  
+  //     // res[0] for fetching a first wallet
+  //     window.ethereum
+  //       .request({ method: "eth_requestAccounts" })
+  //       .then((res) => accountChangeHandler(res[0]));
+  //   } else {
+  //     alert("install metamask extension!!");
+  //   }
+  // };
+  // const getbalance = (address) => {
+  
+  //   // Requesting balance method
+  //   window.ethereum
+  //     .request({ 
+  //       method: "eth_getBalance", 
+  //       params: [address, "latest"] 
+  //     })
+  //     .then((balance) => {
+  //       // Setting balance
+  //       setdata({
+  //         Balance: ethers.utils.formatEther(balance),
+  //       });
+  //     });
+  // };
+  
+  // // Function for getting handling all events
+  // const accountChangeHandler = (account) => {
+  //   // Setting an address data
+  //   setdata({
+  //     address: account,
+  //   });
+  
+  //   // Setting a balance
+  //   getbalance(account);
+  // };
   const handleSignOut = () => {
     signOut(dispatch)
     dispatch(setLogOutUser())
@@ -93,8 +137,22 @@ function Navbar() {
             <div className="tablet:hidden" onClick={handleSearchMode}>
               <ButtonIcon Color={darkMode} Icon="search" />
             </div>
+            {/* button meta mask
+            <Card.Header>
+            <strong>Address: </strong>
+            {data.address}
+            </Card.Header>
+            <Card.Body>
+          <Card.Text>
+            <strong>Balance: </strong>
+            {data.Balance}
+          </Card.Text>
+          
+        </Card.Body>
+            <Button onClick={btnhandler} variant="primary">
+            Connect to wallet
+            </Button> */}
 
-            {/* cart icon button */}
             <Link to="/productCart">
               <ButtonIcon
                 Icon="cart"

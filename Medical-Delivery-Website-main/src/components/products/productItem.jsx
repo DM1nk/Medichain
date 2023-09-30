@@ -42,15 +42,13 @@ function ProductItem({ product }) {
       <img
         src={product.image?.[0]}
         alt="Product"
-        className="w-full laptop:h-[300px] object-cover relative z-10 p-6"
+        className="w-full laptop:h-[300px] object-cover relative z-10 p-6 mb-40"
         onClick={handleProductImgClick}
       />
 
       {/* this is information */}
-      <div className="laptop:flex hidden w-4/5 absolute bottom-4 z-20 px-4 flex-col items-center bg-light_grey dark:bg-secondary rounded-xl translate-y-[calc(100%+16px)] group-hover:translate-y-[calc(70%+16px)] hover:!translate-y-0 transition-all duration-200 dark:text-light_grey">
-        <p className="text-center text-h4 py-2">
-          <strong>Info</strong>
-        </p>
+      <div className="laptop:flex hidden w-4/5  absolute bottom-4 z-20 px-4 flex-col items-center bg-light_grey dark:bg-secondary rounded-xl  transition-all duration-200 dark:text-light_grey"onClick={handleProductImgClick}>
+        
         <hr className="w-[90%] border-t border-t-dark_primary dark:border-t-light_grey" />
         <div className="w-full py-2">
           <p className="line-clamp-2">
