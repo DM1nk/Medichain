@@ -4,7 +4,7 @@ const phoneRegex = RegExp(/^\(?([0-9]{4})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{3})$/)
 
 const UserInformationSchema = yup.object().shape({
   fullname: yup.string().required(),
-  email: yup.string().required(),
+  address:yup.string().required(),  email: yup.string().required(),
   phone: yup
     .string()
     .matches(phoneRegex, 'Phone number is not valid')

@@ -22,7 +22,8 @@ import {
   selectUserBirth,
   setActiveUser,
   selectUserAddressDefault,
-  selectUserAvatar
+  selectUserAvatar,
+  selectUserAddress
 } from '../../redux/features/userSlice'
 import { updateOneUser } from '../../services/user'
 import createUserImg from '../../services/user/create'
@@ -30,56 +31,7 @@ import { colors } from '../../constant/button'
 import { ethers } from "ethers";
 import {  Card } from "react-bootstrap";
 function Profile() {
-  //create form hook
-  const [data, setdata] = useState({
-    address: "",
-    Balance: null,
-  });
-   // Button handler button for handling a
-  // request event for metamask
-  const btnhandler = () => {
-  
-    // Asking if metamask is already present or not
-    if (window.ethereum) {
-  
-      // res[0] for fetching a first wallet
-      window.ethereum
-        .request({ method: "eth_requestAccounts" })
-        .then((res) => accountChangeHandler(res[0]));
-    } else {
-      alert("install metamask extension!!");
-    }
-  };
-  
-  // getbalance function for getting a balance in
-  // a right format with help of ethers
-  const getbalance = (address) => {
-  
-    // Requesting balance method
-    window.ethereum
-      .request({ 
-        method: "eth_getBalance", 
-        params: [address, "latest"] 
-      })
-      .then((balance) => {
-        // Setting balance
-        setdata({
-            address: address,
-          Balance: ethers.utils.formatEther(balance),
-        });
-      });
-  };
-  
-  // Function for getting handling all events
-  const accountChangeHandler = (account) => {
-    console.log(account);
-    // Setting an address data
-    
-  
-    // Setting a balance
-    getbalance(account);
-  };
-  
+ 
   const {
     register,
     handleSubmit,
@@ -92,7 +44,8 @@ function Profile() {
       email: '',
       phone: '',
       gender: '',
-      birth: ''
+      birth: '',
+      address:'',
     },
     resolver: yupResolver(UserInformationSchema)
   })
@@ -106,6 +59,7 @@ function Profile() {
   const userBirth = useSelector(selectUserBirth)
   const userAddressDefault = useSelector(selectUserAddressDefault)
   const userAvatar = useSelector(selectUserAvatar)
+  const userAddress = useSelector(selectUserAddress)
   const [hover, setHover] = useState(false)
 
   useEffect(() => {
@@ -121,7 +75,8 @@ function Profile() {
     if (userPhone) setValue('phone', userPhone)
     if (userGender) setValue('gender', userGender)
     if (userBirth) setValue('birth', userBirth)
-  }, [userFullname, userEmail, userPhone, userGender, userBirth])
+    if (userAddress) setValue('address', userAddress)
+  }, [userFullname, userEmail, userPhone, userGender, userBirth,userAddress])
 
   //update address on firebase and redux store
   const onSubmit = async (data) => {
@@ -130,7 +85,8 @@ function Profile() {
         fullname: data.fullname,
         phone: data.phone,
         gender: data.gender,
-        email: data.email
+        email: data.email,
+        address:data.address
       })
     )
 
@@ -142,7 +98,8 @@ function Profile() {
       birth: data.birth,
       gender: data.gender,
       avatar: userAvatar,
-      addr_default: userAddressDefault
+      addr_default: userAddressDefault,
+      address:data.address
     })
       .then((res) => toast.success(res))
       .catch((e) => toast.error(e))
@@ -181,6 +138,57 @@ function Profile() {
     input.click()
   }
 
+const btnhandler = () => {
+
+  // Asking if metamask is already present or not
+  if (window.ethereum) {
+
+    // res[0] for fetching a first wallet
+    window.ethereum
+      .request({ method: "eth_requestAccounts" })
+      
+      .then((res) => accountChangeHandler(res[0]));
+  } else {
+    alert("install metamask extension!!");
+  }
+};
+
+// getbalance function for getting a balance in
+// a right format with help of ethers
+const getbalance = (address) => {
+
+  // Requesting balance method
+  window.ethereum
+    .request({ 
+      method: "eth_getBalance", 
+      params: [address, "latest"] 
+    })
+    .then((balance) => {
+      // Setting balance
+      
+        // Balance: ethers.utils.formatEther(balance)
+      
+    });
+};
+
+// Function for getting handling all events
+const accountChangeHandler = async (account) => {
+  console.log(account)
+  dispatch(
+    setActiveUser({
+    
+      address:account
+    })
+  )
+
+  await updateOneUser({
+    address:account
+  })
+
+  // Setting a balance
+  getbalance(account);
+};
+console.log(control)
   return (
     <div className="flex-row px-6 pb-14 mb-8 laptop:mt-5 laptop:w-9/12 font-satoshi bg-border_grey dark:bg-secondary dark:text-white rounded-lg shadow-md shadow-black/40 dark:shadow-light_grey/30">
       {/*Helmet async*/}
@@ -206,21 +214,27 @@ function Profile() {
           onSubmit={handleSubmit(onSubmit)}
         >
           {/* button meta mask */}
-          <Card.Header>
-            <strong>Address: </strong>
-            {data.address}
-            </Card.Header>
-            <Card.Body>
-          <Card.Text>
-            <strong>Balance: </strong>
-            {data.Balance}
-          </Card.Text>
-          
-        </Card.Body>
             <Button onClick={btnhandler} variant="primary">
             Connect to wallet
             </Button>
 
+            <label className="flex items-center">
+            <p className="w-32">Wallet address</p>
+          <Controller
+              {...{
+                control,
+                register,
+                name: 'adress',
+                type: 'text',
+                placeholder: 'address',
+                className: 'py-2 px-2 dark:bg-light_grey/40 rounded-md',
+                disabled: true,
+                handleChange: () => {},
+                render: (props) => <Input {...props} />
+              }}
+            />
+            
+          </label>
           {/*User name*/}
           <label className="flex items-center">
             <p className="w-32">Username</p>

@@ -16,6 +16,7 @@ const initialState = {
   addr_default: null,
   birth: null,
   avatar: null,
+  address:null,
   error: null
 }
 
@@ -36,6 +37,7 @@ const userSlice = createSlice({
       if (action.payload.addr_default)
         state.addr_default = action.payload.addr_default
       if (action.payload.birth) state.birth = action.payload.birth
+      if (action.payload.address) state.address = action.payload.address
       if (action.payload.avatar) state.avatar = action.payload.avatar
       state.status = 'idle'
       state.error = null
@@ -49,6 +51,7 @@ const userSlice = createSlice({
       state.gender = null
       state.birth = null
       state.addr_default = null
+      state.address = null
       state.avatar = null
     },
     setUserError: (state, action) => {
@@ -122,6 +125,7 @@ export const getInformation = (userUid) => (dispatch) => {
             phone: user.phone,
             email: user.email,
             birth: user.dob,
+            address:user.address,
             addr_default: user.addr_default,
             avatar: user.avatar,
             uid: userUid
@@ -149,5 +153,5 @@ export const selectUserPhone = (state) => state.user.phone
 export const selectUserGender = (state) => state.user.gender
 export const selectUserBirth = (state) => state.user.birth
 export const selectUserAvatar = (state) => state.user.avatar
-
+export const selectUserAddress= (state) => state.user.address
 export default userSlice.reducer
