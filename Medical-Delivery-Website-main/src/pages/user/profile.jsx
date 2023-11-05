@@ -230,7 +230,7 @@ console.log(control)
                 className: 'py-2 px-2 dark:bg-light_grey/40 rounded-md',
                 disabled: true,
                 handleChange: () => {},
-                render: (props) => <Input {...props} />
+                render: (props) => <Input {...props} value={userAddress} />
               }}
             />
             
