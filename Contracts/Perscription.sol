@@ -11,6 +11,7 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     // mapping (address => bool) i;
     mapping (address => bool) isGovernment;
     mapping (address => bool) isPharmarcy;
+    uint256 requestsCount;
     constructor() ERC721("Hospital", "H") {
       isHospital[msg.sender] = true;
     }
@@ -63,8 +64,40 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     function grantPharmarcy(address pharmarcyAdd) public onlyGovernment {
       isPharmarcy[pharmarcyAdd] = true;
     }
-
-    
+    struct Query{
+      uint requestID;
+      uint256 tokenID;
+      address requester;
+      bool approved;
+    }
+    Query[] public request;
+    event query(address,uint256 tokenId);
+    function queryRequest(uint256 tokenId)public{
+      request.push(Query(requestsCount++,tokenId,msg.sender,false));
+    }
+    function requestRespone(uint requestID)public{
+      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==ownerOf(request[requestID-1].tokenID),"You are not the owner");
+      request[requestID].approved=true;
+      emit query(request[requestID-1].requester, request[requestID-1].tokenID);
+    }
+    struct Fill{
+      uint requestID;
+      uint256 tokenID;
+      address requester;
+      bool approved;
+    }
+    Query[] public fill;
+    event fillPrescription(address,uint256 tokenId,string proof);
+    function fillRequest(uint256 tokenId)public{
+      request.push(Query(requestsCount++,tokenId,msg.sender,false));
+    }
+    function fillRespone(uint requestID)public{
+      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==ownerOf(request[requestID-1].tokenID),"You are not the owner");
+      request[requestID].approved=true;
+      emit query(request[requestID-1].requester, request[requestID-1].tokenID);
+    }
     function revoke(address patient,uint[] memory tokenID,address newPatient) public onlyGovernment {
         for(uint i=0;i<=tokenID.length;i++){
         transferFrom(patient, newPatient, tokenID[i]);
