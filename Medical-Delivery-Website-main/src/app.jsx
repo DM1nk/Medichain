@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+// import { MetaMaskUIProvider } from '@metamask/sdk-react-ui';
 
 import HomePage from './pages/home'
 import {

@@ -7,10 +7,18 @@ import ScrollToTop from './helper/scrollToTop'
 import DarkMode from './hooks/useDarkMode'
 import { Provider } from 'react-redux'
 import store from './redux/stores/store'
+import App from './App';
+import { MetaMaskUIProvider } from '@metamask/sdk-react-ui';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 root.render(
+  // <MetaMaskUIProvider sdkOptions={{
+  //   dappMetadata: {
+  //     name: "Demo UI React App",
+  //   }
+  // }}>
   <BrowserRouter>
     <HelmetProvider>
       <DarkMode>
@@ -21,4 +29,5 @@ root.render(
       </DarkMode>
     </HelmetProvider>
   </BrowserRouter>
+  // </MetaMaskUIProvider>
 )

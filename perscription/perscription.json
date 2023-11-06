@@ -1,8 +1,9 @@
 {
-  "description": "Perscription Infor", 
+  "ownerID": "uint256", 
   "hospitalAddress": "address",
+  "prescriptDate": "date",
   "treatmentTime": "time",
   "lockTime": "time",
-  "createDate": "date",
-  "lastPurchase": "date" 
+  
+  "hash":"string"
 }
