@@ -12,6 +12,7 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     mapping (address => bool) isGovernment;
     mapping (address => bool) isPharmarcy;
     uint256 requestsCount;
+    uint256 fillsCounter;
     constructor() ERC721("Hospital", "H") {
       isHospital[msg.sender] = true;
     }
@@ -64,40 +65,72 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     function grantPharmarcy(address pharmarcyAdd) public onlyGovernment {
       isPharmarcy[pharmarcyAdd] = true;
     }
+
     struct Query{
-      uint requestID;
+      uint256 requestID;
       uint256 tokenID;
       address requester;
       bool approved;
     }
+
     Query[] public request;
+
     event query(address,uint256 tokenId);
+
     function queryRequest(uint256 tokenId)public{
       request.push(Query(requestsCount++,tokenId,msg.sender,false));
     }
-    function requestRespone(uint requestID)public{
+
+    function requestRespone(uint256 requestID)public{
       require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
       require(msg.sender==ownerOf(request[requestID-1].tokenID),"You are not the owner");
       request[requestID].approved=true;
+    }
+
+    function queryEvent(uint256 requestID)public{
+      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==request[requestID-1].requester,"You are not the requester");
+      require(request[requestID-1].approved,"Request is not approved");
       emit query(request[requestID-1].requester, request[requestID-1].tokenID);
     }
+
     struct Fill{
       uint requestID;
       uint256 tokenID;
       address requester;
+      address authority;
       bool approved;
+      bool authorityApproved;
+      string proof;
     }
-    Query[] public fill;
-    event fillPrescription(address,uint256 tokenId,string proof);
-    function fillRequest(uint256 tokenId)public{
-      request.push(Query(requestsCount++,tokenId,msg.sender,false));
+
+    Fill[] public fill;
+
+    event fillPrescription(address,uint256 tokenId,address authority,string proof);
+    function fillRequest(uint256 tokenId,string proof,address authority)public{
+      fill.push(Query(fillsCounter++,tokenId,msg.sender,authority,false,false,proof));
     }
+
     function fillRespone(uint requestID)public{
       require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==ownerOf(request[requestID-1].tokenID),"You are not the owner");
-      request[requestID].approved=true;
-      emit query(request[requestID-1].requester, request[requestID-1].tokenID);
+      require(msg.sender==fill[requestID-1].tokenID),"You are not the owner");
+      fill[requestID].approved=true;
+    
     }
+    
+    function fillPermit(uint requestID)public{
+      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==fill[requestID-1].authority,"You are not the respone authority");
+      fill[requestID].authorityApproved=true;
+    }
+
+    function queryEvent(uint256 requestID)public{
+      require(requestID>0&&requestID<=fillsCount,"Request doesn't exist");
+      require(msg.sender==fill[requestID-1].requester,"You are not the requester");
+      require(fill[requestID-1].approved==true&&fill[requestID-1].authorityApproved,"Request is not approved");
+      emit fillPrescription(fill[requestID-1].requester, fill[requestID-1].tokenID,fill[requestID-1].authority,fill[requestID-1].proof);
+    }
+
     function revoke(address patient,uint[] memory tokenID,address newPatient) public onlyGovernment {
         for(uint i=0;i<=tokenID.length;i++){
         transferFrom(patient, newPatient, tokenID[i]);
