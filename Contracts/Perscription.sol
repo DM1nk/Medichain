@@ -101,19 +101,27 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       address authority;
       bool approved;
       bool authorityApproved;
-      string proof;
+      bytes32 proof;
     }
 
-    Fill[] public fill;
+    Fill[] public  fill;
 
-    event fillPrescription(address,uint256 tokenId,address authority,string proof);
-    function fillRequest(uint256 tokenId,string proof,address authority)public{
-      fill.push(Query(fillsCounter++,tokenId,msg.sender,authority,false,false,proof));
+    event fillPrescription(address,uint256 tokenId,address authority,bytes32 proof);
+    function fillRequest(uint256 tokenId,bytes32 proof,address authority)public{
+      
+      fill.push();
+      fill[fillsCounter].requestID=fillsCounter++;
+      fill[fillsCounter].tokenID=tokenId;
+      fill[fillsCounter].requester=msg.sender;
+      fill[fillsCounter].authority=authority;
+      fill[fillsCounter].approved=false;
+      fill[fillsCounter].authorityApproved=false;
+      fill[fillsCounter].proof=proof;
     }
 
     function fillRespone(uint requestID)public{
       require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==fill[requestID-1].tokenID),"You are not the owner");
+      require(msg.sender==ownerOf(fill[requestID-1].tokenID),"You are not the owner");
       fill[requestID].approved=true;
     
     }
@@ -124,8 +132,8 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       fill[requestID].authorityApproved=true;
     }
 
-    function queryEvent(uint256 requestID)public{
-      require(requestID>0&&requestID<=fillsCount,"Request doesn't exist");
+    function fillEvent(uint256 requestID)public{
+      require(requestID>0&&requestID<=fillsCounter,"Request doesn't exist");
       require(msg.sender==fill[requestID-1].requester,"You are not the requester");
       require(fill[requestID-1].approved==true&&fill[requestID-1].authorityApproved,"Request is not approved");
       emit fillPrescription(fill[requestID-1].requester, fill[requestID-1].tokenID,fill[requestID-1].authority,fill[requestID-1].proof);
