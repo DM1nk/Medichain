@@ -11,8 +11,8 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     // mapping (address => bool) i;
     mapping (address => bool) isGovernment;
     mapping (address => bool) isPharmarcy;
-    uint256 requestsCount;
-    uint256 fillsCounter;
+    uint256 requestsCount=0;
+    uint256 fillsCounter=0;
     constructor() ERC721("Hospital", "H") {
       isHospital[msg.sender] = true;
     }
@@ -82,16 +82,16 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     }
 
     function requestRespone(uint256 requestID)public{
-      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==ownerOf(request[requestID-1].tokenID),"You are not the owner");
+      require(requestID>=0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==ownerOf(request[requestID].tokenID),"You are not the owner");
       request[requestID].approved=true;
     }
 
     function queryEvent(uint256 requestID)public{
-      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==request[requestID-1].requester,"You are not the requester");
-      require(request[requestID-1].approved,"Request is not approved");
-      emit query(request[requestID-1].requester, request[requestID-1].tokenID);
+      require(requestID>=0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==request[requestID].requester,"You are not the requester");
+      require(request[requestID].approved==true,"Request is not approved");
+      emit query(request[requestID].requester, request[requestID].tokenID);
     }
 
     struct Fill{
@@ -109,34 +109,38 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
     event fillPrescription(address,uint256 tokenId,address authority,bytes32 proof);
     function fillRequest(uint256 tokenId,bytes32 proof,address authority)public{
       
-      fill.push();
-      fill[fillsCounter].requestID=fillsCounter++;
-      fill[fillsCounter].tokenID=tokenId;
-      fill[fillsCounter].requester=msg.sender;
-      fill[fillsCounter].authority=authority;
-      fill[fillsCounter].approved=false;
-      fill[fillsCounter].authorityApproved=false;
-      fill[fillsCounter].proof=proof;
+      fill.push(Fill(
+      fillsCounter, 
+      tokenId,
+      msg.sender, 
+      authority,
+      false,
+      false,
+      proof
+    ));
+
+      fillsCounter++;
+      
     }
 
     function fillRespone(uint requestID)public{
-      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==ownerOf(fill[requestID-1].tokenID),"You are not the owner");
+      require(requestID>=0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==ownerOf(fill[requestID].tokenID),"You are not the owner");
       fill[requestID].approved=true;
     
     }
     
     function fillPermit(uint requestID)public{
-      require(requestID>0&&requestID<=requestsCount,"Request doesn't exist");
-      require(msg.sender==fill[requestID-1].authority,"You are not the respone authority");
+      require(requestID>=0&&requestID<=requestsCount,"Request doesn't exist");
+      require(msg.sender==fill[requestID].authority,"You are not the respone authority");
       fill[requestID].authorityApproved=true;
     }
 
     function fillEvent(uint256 requestID)public{
-      require(requestID>0&&requestID<=fillsCounter,"Request doesn't exist");
-      require(msg.sender==fill[requestID-1].requester,"You are not the requester");
-      require(fill[requestID-1].approved==true&&fill[requestID-1].authorityApproved,"Request is not approved");
-      emit fillPrescription(fill[requestID-1].requester, fill[requestID-1].tokenID,fill[requestID-1].authority,fill[requestID-1].proof);
+      require(requestID>=0&&requestID<=fillsCounter,"Request doesn't exist");
+      require(msg.sender==fill[requestID].requester,"You are not the requester");
+      require(fill[requestID].approved==true&&fill[requestID].authorityApproved==true,"Request is not approved");
+      emit fillPrescription(fill[requestID].requester, fill[requestID].tokenID,fill[requestID].authority,fill[requestID].proof);
     }
 
     function revoke(address patient,uint[] memory tokenID,address newPatient) public onlyGovernment {
