@@ -43,7 +43,7 @@ contract Patient is ERC721, ERC721URIStorage, Ownable {
     {
         return super.supportsInterface(interfaceId);
     }
-        function revoke(address patient, uint256[] tokenID,address newPatient) public onlyGovernment {
-      transferFrom(patient, newPatient, tokenID);
-    }
+    //     function revoke(address patient, uint256[] tokenID,address newPatient) public onlyGovernment {
+    //   transferFrom(patient, newPatient, tokenID);
+    // }
 }
