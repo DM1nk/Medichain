@@ -4,7 +4,7 @@ require("@nomicfoundation/hardhat-toolbox");
 module.exports = {
   solidity: "0.8.18",
   etherscan:{
-apikey:"9YAH28ZFCUDF51SPXERIGMUM28257HBE2U",
+apikey:"9YAH28ZFCUDF51SPXERIGMUM28257HBE2U"
   },
   networks:{
     sepolia:{

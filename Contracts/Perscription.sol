@@ -102,12 +102,13 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       bool approved;
       bool authorityApproved;
       bytes32 proof;
+      bytes32 timestamp;
     }
 
     Fill[] public  fill;
 
-    event fillPrescription(address,uint256 tokenId,address authority,bytes32 proof);
-    function fillRequest(uint256 tokenId,bytes32 proof,address authority)public{
+    event fillPrescription(address,uint256 tokenId,address authority,bytes32 proof, bytes32 time);
+    function fillRequest(uint256 tokenId,bytes32 proof,address authority,bytes32 time)public{
       
       fill.push(Fill(
       fillsCounter, 
@@ -116,7 +117,8 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       authority,
       false,
       false,
-      proof
+      proof,
+      time
     ));
 
       fillsCounter++;
@@ -140,7 +142,7 @@ contract Perscription is ERC721, ERC721URIStorage, Ownable {
       require(requestID>=0&&requestID<=fillsCounter,"Request doesn't exist");
       require(msg.sender==fill[requestID].requester,"You are not the requester");
       require(fill[requestID].approved==true&&fill[requestID].authorityApproved==true,"Request is not approved");
-      emit fillPrescription(fill[requestID].requester, fill[requestID].tokenID,fill[requestID].authority,fill[requestID].proof);
+      emit fillPrescription(fill[requestID].requester, fill[requestID].tokenID,fill[requestID].authority,fill[requestID].proof,fill[requestID].timestamp);
     }
 
     function revoke(address patient,uint[] memory tokenID,address newPatient) public onlyGovernment {
